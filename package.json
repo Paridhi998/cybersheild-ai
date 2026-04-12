@@ -1,0 +1,16 @@
+{
+  "name": "cybershield-ai",
+  "version": "1.0.0",
+  "description": "CyberShield AI - Cybersecurity awareness and scam detection",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "latest",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2"
+  }
+}

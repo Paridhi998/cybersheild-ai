@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield AI - Security Scanner & Learner</title>
+    <!-- Modern Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">🛡️ CyberShield<span>AI</span></div>
+        <ul class="nav-links">
+            <li>
+                <a href="#" onclick="showSection('dashboard-section', event); return false;" class="active">
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showSection('scanner-section', event); return false;">
+                    Smart Scanner
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showSection('chat-section', event); return false;">
+                    AI Assistant
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showSection('manual-section', event); return false;">
+                    Learn
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showSection('quiz-section', event); return false;">
+                    Scam Simulator
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- Main Content Area -->
+    <main class="container">
+
+        <!-- 0. Global Dashboard Section -->
+        <section id="dashboard-section" class="active-section">
+            <div class="card">
+                <h1>Global Dashboard</h1>
+                <p>Track your cybersecurity readiness and simulation scores.</p>
+                
+                <div class="cards-grid" style="margin-top: 2rem;">
+                    <div class="score-display" style="width:100%; height:auto; padding:2rem; border-radius:16px;">
+                        <span class="score-label" style="font-size:1rem; margin-bottom:0.5rem; display:block;">Total Scams Analyzed</span>
+                        <h2 id="dash-scams" style="font-size:3rem; color:var(--accent-blue);">0</h2>
+                    </div>
+                    
+                    <div class="score-display" style="width:100%; height:auto; padding:2rem; border-radius:16px;">
+                        <span class="score-label" style="font-size:1rem; margin-bottom:0.5rem; display:block;">Simulations Completed</span>
+                        <h2 id="dash-sims" style="font-size:3rem; color:var(--success);">0</h2>
+                    </div>
+                    
+                    <div class="score-display" style="width:100%; height:auto; padding:2rem; border-radius:16px;">
+                        <span class="score-label" style="font-size:1rem; margin-bottom:0.5rem; display:block;">Improvement Score</span>
+                        <h2 id="dash-improvement" style="font-size:3rem; color:var(--warning);">0%</h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1. Smart Scanner Section -->
+        <section id="scanner-section" class="hidden">
+            <div class="card">
+                <h1>Smart Scanner</h1>
+                <p>Paste a suspicious link, text message, or upload a screenshot to verify if it's safe.</p>
+                <textarea id="scan-input"
+                    placeholder="e.g. http://login.bank-update123.com or 'Urgent: Verify your account now!'..."></textarea>
+                
+                <div class="scanner-actions">
+                    <button class="scanner-btn upload-label" onclick="document.getElementById('file-upload').click()">📎 Upload Screenshot / File</button>
+                    <input type="file" id="file-upload" accept="image/*,.txt" style="display: none;" onchange="handleFileUpload(event)">
+                    <button id="scan-btn" class="scanner-btn primary-btn" onclick="analyzeInput()">Scan Now</button>
+                </div>
+
+                <div id="file-preview" class="hidden">
+                    <span id="file-name"></span>
+                    <button onclick="clearUpload()">❌</button>
+                </div>
+
+                <div id="scan-results" class="hidden">
+                    <div class="score-display">
+                        <h2 id="risk-score">0</h2>
+                        <span class="score-label">Risk Score</span>
+                    </div>
+                    <div id="verdict-banner" class="verdict-safe">Safe</div>
+                    <div class="explanation-box">
+                        <h3>AI Analysis:</h3>
+                        <p id="ai-explanation">Waiting for analysis...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. AI Assistant Section -->
+        <section id="chat-section" class="hidden">
+            <div class="card chat-card">
+                <h1>AI Cybersecurity Assistant</h1>
+                <p>Ask me anything about online safety, phishing, or scams!</p>
+
+                <div class="chat-window" id="chat-window">
+                    <div class="chat-message bot-msg">
+                        Hello! I'm CyberShield AI. How can I help you stay safe online today?
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="e.g., What is phishing?">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Security Manual Section -> Cyber Training Zone -->
+        <section id="manual-section" class="hidden">
+            <div class="card" style="position: relative;">
+                
+                <div class="training-header">
+                    <h1>Cyber Training Zone</h1>
+                    <p>Learn by doing! Identify scams, make decisions, and earn XP.</p>
+                </div>
+                
+                <div class="xp-counter-top">
+                    <span>TRAINING XP</span>
+                    <strong id="training-xp-display" style="color: #10b981; text-shadow: 0 0 5px #10b981;">0</strong>
+                </div>
+
+                <!-- Start Screen -->
+                <div id="training-start-screen" class="text-center" style="margin-top: 2rem;">
+                    <button class="sim-btn" onclick="startTrainingSession()" style="width: 100%; border-color: var(--accent-blue);">Start Training</button>
+                    <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">8 Scenarios | Earn +10 XP per correct decision</p>
+                </div>
+
+                <!-- Active Question Container -->
+                <div id="training-active-container" class="hidden">
+                    <div id="training-question-box" class="training-card">
+                        <span id="training-scenario-tag" style="background:#ef4444; color:#fff; padding:3px 8px; border-radius:4px; font-size:0.7rem; font-weight:bold; letter-spacing:1px;">SCENARIO</span>
+                        <h3 id="training-question-text" style="margin-top: 1rem; font-size: 1.2rem;">Loading...</h3>
+                    </div>
+
+                    <div id="training-choices-grid" class="cards-grid" style="margin-top: 1.5rem;">
+                        <!-- Buttons injected via JS -->
+                    </div>
+
+                    <!-- Instant Feedback Box -->
+                    <div id="training-feedback-box" class="explanation-box hidden" style="margin-top: 2rem;">
+                        <h4 id="training-feedback-title">Result</h4>
+                        <p id="training-feedback-text">Explanation here...</p>
+                        <button id="training-next-btn" class="sim-btn" style="width: 100%; margin-top: 1rem; border-color: var(--success);" onclick="nextTrainingQuestion()">Next Question ➡️</button>
+                    </div>
+                </div>
+
+                <!-- Completion Screen -->
+                <div id="training-completion-screen" class="hidden text-center" style="margin-top: 2rem;">
+                    <h2 class="glitch-success">TRAINING COMPLETE</h2>
+                    <p style="margin-bottom: 2rem;">You successfully leveled up your scam detection skills.</p>
+                    <button class="sim-btn" style="margin-bottom: 1rem;" onclick="document.getElementById('quiz-section').classList.remove('hidden'); document.getElementById('manual-section').classList.add('hidden');">Try Live Simulator</button>
+                    <button class="sim-action-btn" onclick="resetTrainingSession()" style="width:100%; border:none; color:var(--text-muted);">Restart Training</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Interactive Gamified Simulator (HACKER TERMINAL) -->
+        <section id="quiz-section" class="hidden simulator-section">
+            <div class="card sim-card">
+                
+                <!-- Gamification Dashboard -->
+                <div class="gamification-dashboard">
+                    <div class="gf-stat">
+                        <span class="gf-label">PLAYER LEVEL</span>
+                        <span id="player-level" class="gf-value level-beginner">Beginner</span>
+                    </div>
+                    <div class="gf-stat">
+                        <span class="gf-label">HACKER XP</span>
+                        <span id="player-xp" class="gf-value">0 XP</span>
+                    </div>
+                    <div class="gf-badges" id="player-badges">
+                        <!-- Badges will be appended here -->
+                    </div>
+                </div>
+
+                <div class="sim-header">
+                    <h1>⚠️ Live Cyber Attack Terminal ⚠️</h1>
+                    <p>Defeat the AI attacker. Choose your actions carefully.</p>
+                </div>
+
+                <div class="sim-dashboard">
+                    <div class="sim-risk-meter">
+                        <span style="font-weight:bold; letter-spacing:1px; color:#f8fafc;" id="risk-label">Threat Level: <span style="color:#10b981;">LOW</span></span>
+                        <div class="progress-bar-container">
+                            <div id="sim-risk-bar" class="progress-bar bg-green" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario Selection -->
+                <div id="sim-scenarios" class="sim-scenarios-grid">
+                    <button class="sim-btn" onclick="startAdvancedSimulation('Fake Bank Login')">🏦 Bank Phishing</button>
+                    <button class="sim-btn" onclick="startAdvancedSimulation('OTP Fraud')">📱 OTP Extraction</button>
+                    <button class="sim-btn" onclick="startAdvancedSimulation('WhatsApp Family Imposter')">💬 "Hi Mom" Imposter</button>
+                    <button class="sim-btn" onclick="startAdvancedSimulation('Fake Delivery Fee')">📦 Delivery Malware</button>
+                </div>
+
+                <!-- Hacker Terminal Area -->
+                <div id="sim-interactive-area" class="hidden">
+                    <div id="sim-screen" class="sim-terminal-container">
+                        <div id="sim-chat-history"></div>
+                        <div id="sim-typing-indicator" class="hidden typing-effect">Attacker is typing...</div>
+                    </div>
+                    
+                    <!-- Dynamic Action Buttons -->
+                    <div id="sim-action-buttons" class="sim-actions-grid">
+                        <!-- Populated dynamically by JS -->
+                    </div>
+                </div>
+
+                <!-- AI Analysis & Conclusion -->
+                <div id="sim-analysis" class="hidden">
+                    <div id="end-status-banner" class="glitch-warning">ACCOUNT COMPROMISED</div>
+                    <div class="sim-explanation">
+                        <h3 id="sim-analysis-title" style="color: #ef4444; margin-bottom: 0.5rem;">Incident Report</h3>
+                        <p id="sim-analysis-text"></p>
+                    </div>
+                    <button class="sim-btn-restart" onclick="resetSimulation()">🔄 Next Scenario</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
